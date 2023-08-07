@@ -63,5 +63,5 @@ export class ChatComponent implements OnInit {
 
   onScroll() {debugger
     console.log('scrolled!!');
-  }
+  } 
 }
