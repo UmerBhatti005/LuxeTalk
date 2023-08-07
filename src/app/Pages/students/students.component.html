@@ -1,0 +1,76 @@
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-info" href="#">Umer Code</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" (click)="createForm(); showPageBool = true; this.updateSection = false;" href="#">Create</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" (click)="showPageBool = false" href="#">Students</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav> -->
+
+
+
+
+<div class="container" style="margin-top: 15rem;" *ngIf="showPageBool">
+
+    <h1 class="text-center"> {{updateSection == true ? 'Update Student' : 'Create Student'}}</h1>
+    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+            <label for="inputName" class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName="name" id="inputName">
+        </div>
+        <div class="mb-3">
+            <label for="inputEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" formControlName="email" id="inputEmail">
+        </div>
+        <div class="mb-3">
+            <label for="inputCourse" class="form-label">Student Course</label>
+            <input type="text" class="form-control" formControlName="course" id="inputCourse">
+        </div>
+        <div class="mb-3">
+            <label for="inputFees" class="form-label">Fees</label>
+            <input type="text" class="form-control" formControlName="fees" id="inputFees">
+        </div>
+        <button type="submit" class="btn btn-primary mx-2">Submit</button>
+        <button type="button" (click)="createForm();" class="btn btn-danger">Reset</button>
+    </form>
+</div>
+
+
+
+<div class="container" style="margin-top: 15rem;" *ngIf="!showPageBool">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Student Course</th>
+                <th scope="col">Fees</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let student of students">
+                <th>{{student.name}}</th>
+                <td>{{student.email}}</td>
+                <td>{{student.course}}</td>
+                <td>{{student.fees}}</td>
+                <td><button class="btn btn-success mx-2" (click)="editStudent(student.id)">Edit</button><button class="btn btn-danger" (click)="deleteStudent(student.id)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

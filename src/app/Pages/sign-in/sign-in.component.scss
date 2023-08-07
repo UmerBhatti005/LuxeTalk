@@ -1,0 +1,18 @@
+.live{
+    display: flex;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-color: #ff69b4;
+    animation: pulse 1500ms infinite;
+}
+
+@keyframes pulse{
+    0%{
+        box-shadow: #ff69b4 0 0 0 0;
+    }
+    100%{
+        box-shadow: #ff69b400 0 0 0 16px;
+    }
+}
