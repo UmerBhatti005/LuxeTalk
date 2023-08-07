@@ -40,7 +40,10 @@ export class ChatComponent implements OnInit {
         this.chats = res.map(e => {
           return {
             id: e.payload.doc.id,
-            ...e.payload.doc.data() as {}
+            name : e.payload.doc.data().name,
+            UserId : e.payload.doc.data().UserId,
+            chatMsg : e.payload.doc.data().chatMsg,
+            updatedBy : new Date(e.payload.doc.data().updatedBy * 1000),
           }
         });
       }
@@ -51,7 +54,7 @@ export class ChatComponent implements OnInit {
     var obj = {
       name: "Umer",
       chatMsg: this.chatMsg,
-      updatedBy: new Date().toLocaleString(),
+      updatedBy: new Date(),
       UserId: JSON.parse(localStorage.getItem('user')).uid
     }
     this.itemService.CreateItem(obj);
