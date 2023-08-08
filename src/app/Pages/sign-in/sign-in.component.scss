@@ -1,25 +1,6 @@
-// .live{
-//     display: flex;
-//     justify-content: center;
-//     height: 24px;
-//     width: 24px;
-//     border-radius: 50%;
-//     background-color: #ff69b4;
-//     animation: pulse 1500ms infinite;
-// }
-
-// @keyframes pulse{
-//     0%{
-//         box-shadow: #ff69b4 0 0 0 0;
-//     }
-//     100%{
-//         box-shadow: #ff69b400 0 0 0 16px;
-//     }
-// }
-
-
-/* Google Font Link */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
 
 * {
     margin: 0;
