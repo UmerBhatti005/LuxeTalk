@@ -12,21 +12,19 @@ export class ItemsService {
   firebaseTable: string = '';
 
   GetItemsWithPagination(req: any) {
-    debugger
-    // this.rows * this.pageNumber - this.rows
     const queryFn: QueryFn = ref => ref
       .orderBy("email")
       .startAfter(req._pageIndex)
       .limit(req._pageSize);
-    // req._pageSize = req._pageIndex;
-    // this.pageNumber = req._pageIndex / req._pageSize + 1;
     return this.fireStore.collection(this.firebaseTable, queryFn).snapshotChanges();
-    // return this.fireStore.collection(this.firebaseTable, ref => ref.orderBy('updatedBy', 'desc')).snapshotChanges();
   }
 
   GetItems() {
-    // return this.fireStore.collection(this.firebaseTable).snapshotChanges();
     return this.fireStore.collection(this.firebaseTable, ref => ref.orderBy('updatedBy', 'asc')).snapshotChanges();
+  }
+
+  GetchatofTwoPeople(obj: any) {debugger
+    return this.fireStore.firestore.collection(this.firebaseTable).where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson]);    
   }
 
   GetItemById(id) {

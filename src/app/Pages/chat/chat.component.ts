@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ItemsService } from 'src/app/Services/Items/items.service';
+import { ToasterService } from 'src/app/Services/ToasterService/toaster.service';
 
 @Component({
   selector: 'app-chat',
@@ -12,21 +13,24 @@ import { ItemsService } from 'src/app/Services/Items/items.service';
 export class ChatComponent implements OnInit {
 
   chatMsg: any;
-  chats: any;
+  chats: any = [];
   loggedInUserId: any;
   scrollDistance: any = 2; // Adjust this value according to your needs
   public datePipe = new DatePipe('en-US');
+  usersData: any;
 
 
   constructor(public afs: AngularFirestore, // Inject Firestore service,
-  public afAuth: AngularFireAuth, // Inject Firebase auth service
-   private itemService: ItemsService) {
+    public afAuth: AngularFireAuth, // Inject Firebase auth service
+    private itemService: ItemsService,
+    private toastrService: ToasterService) {
 
   }
 
   ngOnInit(): void {
     this.itemService.firebaseTable = 'chatMsg';
-    this.GetMsgs();
+    this.GetAllUser();
+    // this.GetMsgs('');
     this.afAuth.authState.subscribe((user: any) => {
       if (user) {
         this.loggedInUserId = user._delegate.uid;
@@ -34,34 +38,78 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  GetMsgs() {
+  GetAllUser() {
+    this.itemService.firebaseTable = 'users';
     this.itemService.GetItems().subscribe(
       (res: any) => {
-        this.chats = res.map(e => {
+        debugger
+        this.usersData = res.map(e => {
           return {
             id: e.payload.doc.id,
-            name : e.payload.doc.data().name,
-            UserId : e.payload.doc.data().UserId,
-            chatMsg : e.payload.doc.data().chatMsg,
-            updatedBy : new Date(e.payload.doc.data().updatedBy * 1000),
+            ...e.payload.doc.data() as {}
           }
         });
+        // this.usersData.filter(x => x.uid ==this)
       }
     )
   }
 
-  sendMsg() {
+  GetMsgs(openChatPerson: string) {
+    this.chats = [];
+    this.itemService.firebaseTable = 'chatMsg';
+    let obj = {
+      loggedInUser: this.loggedInUserId,
+      openChatPerson: openChatPerson
+    };
+    this.itemService.GetchatofTwoPeople(obj).get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        // Access the document data
+        let chatModel = {
+          id: doc.id,
+          name: doc.data().name,
+          UserId: doc.data().UserId,
+          chatMsg: doc.data().chatMsg,
+          updatedBy: new Date(doc.data().updatedBy * 1000),
+        }
+        this.chats.push(chatModel);
+      });
+    }).catch((error) => {
+      console.error("Error getting documents: ", error);
+    });
+    // .get().then((querySnapshot) => {
+    //   querySnapshot.forEach((res) => {
+    //     debugger
+    //     console.log(res);
+
+    //   })
+    // })
+    // .subscribe(
+    //   (res: any) => {
+    //     this.chats = res.map(e => {
+    //       return {
+    //         id: e.payload.doc.id,
+    //         name : e.payload.doc.data().name,
+    //         UserId : e.payload.doc.data().UserId,
+    //         chatMsg : e.payload.doc.data().chatMsg,
+    //         updatedBy : new Date(e.payload.doc.data().updatedBy * 1000),
+    //       }
+    //     });
+    //   }
+    // )
+  }
+
+  async sendMsg() {
+    this.itemService.firebaseTable = 'chatMsg';
     var obj = {
       name: "Umer",
       chatMsg: this.chatMsg,
       updatedBy: new Date(),
       UserId: JSON.parse(localStorage.getItem('user')).uid
     }
-    this.itemService.CreateItem(obj);
+    await this.itemService.CreateItem(obj);
+    this.toastrService.customSuccess("Message Send Successfully.")
     this.chatMsg = '';
   }
 
-  onScroll() {debugger
-    console.log('scrolled!!');
-  } 
+
 }

@@ -18,6 +18,15 @@ body {
     padding: 30px;
 }
 
+#app-sign-in{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #7d2ae8;
+    padding: 30px;
+}
+
 .container {
     position: relative;
     max-width: 850px;

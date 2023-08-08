@@ -1,3 +1,4 @@
+<p-toast position="top-right" key="save"></p-toast>
 <!-- <div class="displayTable">
   <div class="displayTableCell">
     <div class="authBlock">
@@ -81,69 +82,70 @@
     </div>
   </div> -->
 
-
-<div class="container">
-  <input type="checkbox" id="flip">
-  <div class="cover">
-    <div class="front">
-      <img src="/assets/Images/backImg.jpg" alt="">
-      <div class="text">
-        <span class="text-1">Every new friend is a <br> new adventure</span>
-        <span class="text-2">Let's get connected</span>
+<div id="app-sign-in">
+  <div class="container">
+    <input type="checkbox" id="flip">
+    <div class="cover">
+      <div class="front">
+        <img src="/assets/Images/backImg.jpg" alt="">
+        <div class="text">
+          <span class="text-1">Every new friend is a <br> new adventure</span>
+          <span class="text-2">Let's get connected</span>
+        </div>
+      </div>
+      <div class="back">
+        <img class="backImg" src="/src/assets/Images/frontImg.jpg" alt="">
+        <div class="text">
+          <span class="text-1">Complete miles of journey <br> with one step</span>
+          <span class="text-2">Let's get started</span>
+        </div>
       </div>
     </div>
-    <div class="back">
-      <img class="backImg" src="/src/assets/Images/frontImg.jpg" alt="">
-      <div class="text">
-        <span class="text-1">Complete miles of journey <br> with one step</span>
-        <span class="text-2">Let's get started</span>
-      </div>
-    </div>
-  </div>
-  <div class="forms">
-    <div class="form-content">
-      <div class="login-form">
-        <div class="title">Login</div>
-        <form action="#">
-          <div class="input-boxes">
-            <div class="input-box">
-              <i class="fas fa-envelope"></i>
-              <input type="text" placeholder="Enter your email" required>
+    <div class="forms">
+      <div class="form-content">
+        <div class="login-form">
+          <div class="title">Login</div>
+          <form [formGroup]="loginForm" (ngSubmit)="Login()">
+            <div class="input-boxes">
+              <div class="input-box">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="Email" name="Email" placeholder="Enter your email" formControlName="Email">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Enter your password" id="Password" name="Password" formControlName="Password">
+              </div>
+              <div class="text"><a href="#">Forgot password?</a></div>
+              <div class="button input-box">
+                <input type="submit" value="Submit">
+              </div>
+              <div class="text sign-up-text">Don't have an account? <label for="flip">Sigup now</label></div>
             </div>
-            <div class="input-box">
-              <i class="fas fa-lock"></i>
-              <input type="password" placeholder="Enter your password" required>
+          </form>
+        </div>
+        <div class="signup-form">
+          <div class="title">Signup</div>
+          <form [formGroup]="registerForm" (ngSubmit)="Register()">
+            <div class="input-boxes">
+              <div class="input-box">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Enter your name" id="UserName" name="UserName" formControlName="UserName">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-envelope"></i>
+                <input type="text" placeholder="Enter your email" id="Email" name="Email" formControlName="Email">
+              </div>
+              <div class="input-box">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Enter your password" id="Password" name="Password" formControlName="Password">
+              </div>
+              <div class="button input-box">
+                <input type="submit" value="Sumbit">
+              </div>
+              <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
             </div>
-            <div class="text"><a href="#">Forgot password?</a></div>
-            <div class="button input-box">
-              <input type="submit" value="Sumbit">
-            </div>
-            <div class="text sign-up-text">Don't have an account? <label for="flip">Sigup now</label></div>
-          </div>
-        </form>
-      </div>
-      <div class="signup-form">
-        <div class="title">Signup</div>
-        <form action="#">
-          <div class="input-boxes">
-            <div class="input-box">
-              <i class="fas fa-user"></i>
-              <input type="text" placeholder="Enter your name" required>
-            </div>
-            <div class="input-box">
-              <i class="fas fa-envelope"></i>
-              <input type="text" placeholder="Enter your email" required>
-            </div>
-            <div class="input-box">
-              <i class="fas fa-lock"></i>
-              <input type="password" placeholder="Enter your password" required>
-            </div>
-            <div class="button input-box">
-              <input type="submit" value="Sumbit">
-            </div>
-            <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
