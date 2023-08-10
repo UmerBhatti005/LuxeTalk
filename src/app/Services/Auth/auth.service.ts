@@ -20,12 +20,13 @@ export class AuthService {
     public toastrService: ToasterService
   ) {
     /* Saving user data in localstorage when 
-    logged in and setting up null when logged out */debugger
+    logged in and setting up null when logged out */
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
-        localStorage.setItem('UserEmail', JSON.stringify(this.userData.email));
-        localStorage.setItem('UserId', JSON.stringify(this.userData.uid));
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(this.userData));
+        // localStorage.setItem('UserId', JSON.stringify(this.userData.uid));
         // JSON.parse(localStorage.getItem('UserEmail')!);
         // JSON.parse(localStorage.getItem('UserId')!);
       } else {
@@ -35,7 +36,7 @@ export class AuthService {
     });
   }
   // Sign in with email/password
-  SignIn(formValue: any) {debugger
+  SignIn(formValue: any) {
 
     return this.afAuth
       .signInWithEmailAndPassword(formValue.Email, formValue.Password)
@@ -45,7 +46,7 @@ export class AuthService {
           if (user) {
             // this.router.navigate(['dashboard']);
           }
-          this.toastrService.logedInSuccessfully();
+          // this.toastrService.logedInSuccessfully();
         });
       })
       .catch((error) => {
@@ -53,7 +54,7 @@ export class AuthService {
       });
   }
   // Sign up with email/password
-  SignUp(form: any) {debugger
+  SignUp(form: any) {
     return this.afAuth
       .createUserWithEmailAndPassword(form.Email, form.Password)
       .then((result) => {
@@ -94,7 +95,7 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(user: any, form: any) {debugger
+  SetUserData(user: any, form: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );

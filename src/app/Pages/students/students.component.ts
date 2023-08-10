@@ -45,7 +45,6 @@ export class StudentsComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger
     if (this.updateSection == true) {
       this.studentForm.value.updatedBy = new Date().toLocaleString()
       this.itemService.UpdateItem(this.studentForm.value, this.updateStudentId);
@@ -57,7 +56,6 @@ export class StudentsComponent implements OnInit {
   }
 
   editStudent(id) {
-    debugger
     this.showPageBool = true;
     this.updateSection = true;
     this.itemService.GetItemById(id).subscribe(

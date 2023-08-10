@@ -1,3 +1,4 @@
+<p-toast position="top-right" key="save"></p-toast>
 <main class="content">
     <div class="container-fluid">
         <h1 class="h3 mb-3">Messages</h1>
@@ -27,15 +28,15 @@
 
                     <hr class="d-block d-lg-none mt-1 mb-0">
                 </div>
-                <div class="col-12 col-lg-7 col-xl-9">
+                <div class="col-12 col-lg-7 col-xl-9" [style]="showChatBoxBool ? 'display: block;': 'display: none;'">
                     <div class="py-2 px-4 border-bottom d-none d-lg-block">
                         <div class="d-flex align-items-center py-1">
                             <div class="position-relative">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                    class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                                <img src="{{ImageUrl}}"
+                                    class="rounded-circle mr-1" alt="{{UserName}}" width="40" height="40">
                             </div>
                             <div class="flex-grow-1 pl-3">
-                                <strong>Sharon Lessman</strong>
+                                <strong>{{UserName}}</strong>
                                 <div class="text-muted small"><em>Typing...</em></div>
                             </div>
                             <div>
@@ -70,10 +71,17 @@
                         <div class="chat-messages p-4">
 
                             
-                            <div *ngFor="let chat of chats">
+                            <div *ngFor="let chat of chats; let i = index">
+
+                                <div style="width: 100%; text-align: center;">
+                                    <button *ngIf="i+1 == messageLimit && showReadMoreButton" class="button-89" role="button" (click)="showMoreMessages()" >Read More</button>
+                                </div>
+                                <!-- <h1>{{i}}</h1>
+                                <h1>{{messageLimit}}</h1> -->
+
                                 <div class="chat-message-right mb-4" *ngIf="chat.UserId == loggedInUserId">
                                     <div>
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                        <img src="{{ImageUrl}}"
                                             class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">
                                             {{this.datePipe.transform(chat.updatedBy,'hh:mm a')}}</div>
@@ -83,32 +91,49 @@
                                         {{chat.chatMsg}}
                                     </div>
                                 </div>
-
+                                
+                                 
                                 <div class="chat-message-left pb-4" *ngIf="chat.UserId != loggedInUserId">
                                     <div>
                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                            class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                                            class="rounded-circle mr-1" alt="{{UserName}}" width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">
                                             {{this.datePipe.transform(chat.updatedBy,'hh:mm a')}}</div>
                                     </div>
                                     <div class="flex-shrinnpm install --savek-1 bg-light rounded py-2 px-3 ml-3">
-                                        <div class="font-weight-bold mb-1">Sharon Lessman</div>
+                                        <div class="font-weight-bold mb-1">{{UserName}}</div>
                                         {{chat.chatMsg}}
                                     </div>
                                 </div>
+
+                                
                             </div>
                         </div>
                     </div>
 
                     <div class="flex-grow-0 py-3 px-4 border-top">
+                        <span class="text-danger" *ngIf="msgRequired">Please type a message to continue.</span>
                         <div class="input-group">
-                            <input type="text" class="form-control" [(ngModel)]="chatMsg"
+                            <input type="text" class="form-control" (keyup)="msgRequired=false" (keyup.enter)="sendMsg()" [(ngModel)]="chatMsg"
                                 placeholder="Type your message">
-                            <button class="btn btn-primary" (click)="sendMsg()">Send</button>
-                        </div>
+                                <button class="btn btn-primary" (click)="sendMsg()">Send</button>
+                            </div>
                     </div>
 
                 </div>
+                <div class="parentWrapper" [style]="!showChatBoxBool ? 'display: block;': 'display: none;'">
+                <div class="wrapper" style="margin-bottom: 15rem;">
+                    <span>L</span>
+                    <span>U</span>
+                    <span>X</span>
+                    <span>E</span>
+                    <span>T</span>
+                    <span>A</span>
+                    <span>L</span>
+                    <span>K</span>
+                    <!-- <h1>LuxeTalk</h1> -->
+                </div>
+            </div>
             </div>
         </div>
     </div>

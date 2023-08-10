@@ -23,8 +23,19 @@ export class ItemsService {
     return this.fireStore.collection(this.firebaseTable, ref => ref.orderBy('updatedBy', 'asc')).snapshotChanges();
   }
 
-  GetchatofTwoPeople(obj: any) {debugger
-    return this.fireStore.firestore.collection(this.firebaseTable).where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson]);    
+  // GetchatofTwoPeople(obj: any) {
+  //   return this.fireStore.firestore.collection(this.firebaseTable).where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson]);
+  // }
+
+  GetchatofTwoPeople(obj: { loggedInUser: string, openChatPerson: string }, take: number, skip: any): Observable<any[]> {debugger
+    return this.fireStore.collection(this.firebaseTable, ref => {
+      return ref
+        .where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson])
+        .where('SendToUser', 'in', [obj.loggedInUser, obj.openChatPerson])
+        .orderBy('updatedBy', 'desc')
+        //.startAfter(skip)
+         .limit(take)
+    }).valueChanges();
   }
 
   GetItemById(id) {

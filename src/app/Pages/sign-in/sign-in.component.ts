@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { ToasterService } from 'src/app/Services/ToasterService/toaster.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -13,7 +15,9 @@ export class SignInComponent implements OnInit {
   loginForm!: FormGroup;
   constructor(
     public authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastrNotification: ToasterService,
+    private messageService: MessageService
   ) {
   }
   ngOnInit(): void {
@@ -41,11 +45,16 @@ export class SignInComponent implements OnInit {
       { validators: passwordMatchingValidatior })
   }
 
-  Login(){debugger
+  Login(){
     this.authService.SignIn(this.loginForm.value)
+    this.messageService.add({
+      key: 'save',
+      severity: '',
+      detail: `Please select at least one of the following.`
+    });
   }
 
-  Register(){debugger
+  Register(){
     this.authService.SignUp(this.registerForm.value)
   }
 }

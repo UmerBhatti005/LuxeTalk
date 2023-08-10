@@ -791,7 +791,7 @@ to get the result that you can see in the preview selection body {
 
 .chat-messages {
 	display: flex;
-	flex-direction: column;
+	flex-direction: column-reverse;
 	max-height: 590px;
 	overflow-y: scroll
 }
@@ -827,4 +827,106 @@ to get the result that you can see in the preview selection body {
 
 .border-top {
 	border-top: 1px solid #dee2e6 !important;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Titan+One&display=swap");
+.wrapper {
+  width: 100vw;
+  text-align: center;
+  span {
+    -webkit-text-stroke-width: 1.25px;
+    -webkit-text-stroke-color: #000;
+    font-size: 45px;
+    text-shadow: 0 0px #f3c623, 0 0px #f2aaaa;
+    transform: translate(0, 100%) rotate(4deg);
+    animation: jump 2s ease-in-out infinite;
+    display: inline-block;
+    font-family: "Titan One", cursive;
+    color: #fff;
+
+    @for $i from 1 through 7 {
+      &:nth-child(#{$i}) {
+        animation-delay: 120ms * $i;
+      }
+    }
+  }
+}
+@keyframes jump {
+  33% {
+    text-shadow: 0 60px #f37121, 0 150px #f2aaaa;
+  }
+  50% {
+    transform: translate(0, 0) rotate(-4deg);
+    text-shadow: 0 0px #8fc0a9, 0 0px #84a9ac;
+  }
+  66.67% {
+    text-shadow: 0 -60px #d54062, 0 -150px #8fc0a9;
+  }
+}
+// html {
+//   width: 100%;
+//   height: 100vh;
+// }
+// body {
+//   margin: 0;
+//   padding: 0;
+//   width: 100%;
+//   height: 100vh;
+//   box-sizing: border-box;
+//   display: grid;
+//   place-items: center;
+//   overflow: hidden;
+//   background: #000;
+// }
+@media screen and (max-height: 200px) {
+  .wrapper {
+    transform: scale(0.3,0.3);
+  }
+}
+@media screen and (max-width: 576px) {
+  .wrapper {
+    span {
+      font-size: 50px;
+    }
+  }
+}
+
+
+// <!-- HTML !-->
+// <button class="button-89" role="button">Button 89</button>
+
+/* CSS */
+.button-89 {
+  --b: 3px;   /* border thickness */
+  --s: .45em; /* size of the corner */
+  --color: #373B44;
+  
+  padding: calc(.5em + var(--s)) calc(.9em + var(--s));
+  color: var(--color);
+  --_p: var(--s);
+  background:
+    conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
+    var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+  transition: .3s linear, color 0s, background-color 0s;
+  outline: var(--b) solid #0000;
+  outline-offset: .6em;
+  font-size: 16px;
+
+  border: 0;
+
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-89:hover,
+.button-89:focus-visible{
+  --_p: 0px;
+  outline-color: var(--color);
+  outline-offset: .05em;
+}
+
+.button-89:active {
+  background: var(--color);
+  color: #fff;
 }

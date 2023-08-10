@@ -23,8 +23,8 @@ export class UsersComponent implements OnInit {
   }
   ngOnInit(): void {
     this.itemService.firebaseTable = 'users';
-    this.GetAllUser();
     this.dataSource.paginator = this.paginator;
+    this.GetAllUser();
   }
 
   GetAllUser() {
