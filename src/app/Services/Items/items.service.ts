@@ -27,7 +27,7 @@ export class ItemsService {
   //   return this.fireStore.firestore.collection(this.firebaseTable).where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson]);
   // }
 
-  GetchatofTwoPeople(obj: { loggedInUser: string, openChatPerson: string }, take: number, skip: any): Observable<any[]> {debugger
+  GetchatofTwoPeople(obj: { loggedInUser: string, openChatPerson: string }, take: number, skip: any): Observable<any[]> {
     return this.fireStore.collection(this.firebaseTable, ref => {
       return ref
         .where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson])

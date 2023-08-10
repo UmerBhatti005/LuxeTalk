@@ -181,7 +181,7 @@ export class ChatComponent implements OnInit {
       openChatPerson: this.openChatPerson,
     }, this.messageLimit, this.messageSkip);
 
-    this.chatMessages$.subscribe((messages: any) => {debugger
+    this.chatMessages$.subscribe((messages: any) => {
       console.log(messages); // Handle the retrieved data here
       // this.chats.push.apply(this.chats, messages)
       this.chats = messages;
