@@ -65,7 +65,7 @@ export class ChatComponent implements OnInit {
         });
         let loggedInUserIndex = this.usersData.findIndex(x => x.uid == this.loggedInUserId);
         this.loggedInUser = this.usersData.splice(loggedInUserIndex, 1);
-        this.loggedInImageUrl = this.loggedInUser.ImageUrl;
+        this.loggedInImageUrl = this.loggedInUser[0].ImageUrl;
       }
     )
   }

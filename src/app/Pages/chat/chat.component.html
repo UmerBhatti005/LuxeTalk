@@ -81,7 +81,7 @@
 
                                 <div class="chat-message-right mb-4" *ngIf="chat.UserId == loggedInUserId">
                                     <div>
-                                        <img src="{{ImageUrl}}"
+                                        <img src="{{loggedInImageUrl}}"
                                             class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">
                                             {{this.datePipe.transform(chat.updatedBy,'hh:mm a')}}</div>
@@ -95,7 +95,7 @@
                                  
                                 <div class="chat-message-left pb-4" *ngIf="chat.UserId != loggedInUserId">
                                     <div>
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                        <img src="{{ImageUrl}}"
                                             class="rounded-circle mr-1" alt="{{UserName}}" width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">
                                             {{this.datePipe.transform(chat.updatedBy,'hh:mm a')}}</div>

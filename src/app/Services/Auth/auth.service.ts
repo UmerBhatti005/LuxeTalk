@@ -46,7 +46,7 @@ export class AuthService {
           if (user) {
             // this.router.navigate(['dashboard']);
           }
-          // this.toastrService.logedInSuccessfully();
+          this.toastrService.logedInSuccessfully();
         });
       })
       .catch((error) => {

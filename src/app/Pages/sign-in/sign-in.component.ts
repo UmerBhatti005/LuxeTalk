@@ -61,11 +61,6 @@ export class SignInComponent implements OnInit {
 
   Login() {
     this.authService.SignIn(this.loginForm.value)
-    this.messageService.add({
-      key: 'save',
-      severity: '',
-      detail: `Please select at least one of the following.`
-    });
   }
 
   async Register() {
