@@ -9,13 +9,13 @@
                     <div class="px-4 d-none d-md-block">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <input type="text" class="form-control my-3" placeholder="Search...">
+                                <input type="text" #searchText class="form-control my-3" placeholder="Search..." (keyup)="filterUser($event)">
                             </div>
                         </div>
                     </div>
 
                     <button style="outline: none;" (click)="GetMsgs(userData.uid)" class="list-group-item list-group-item-action border-0"
-                        *ngFor="let userData of usersData">
+                        *ngFor="let userData of allusers">
                         <div class="d-flex align-items-start">
                             <img src="{{userData.ImageUrl}}" class="rounded-circle mr-1" alt="{{userData.UserName}}" width="40"
                                 height="40">

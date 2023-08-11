@@ -31,6 +31,7 @@ export class ChatComponent implements OnInit {
   showReadMoreButton: boolean = true;
   messageSkip: number = 0;
   msgRequired: boolean = false;
+  allusers: any;
 
 
   constructor(public afs: AngularFirestore, // Inject Firestore service,
@@ -63,6 +64,7 @@ export class ChatComponent implements OnInit {
             ...e.payload.doc.data() as {}
           }
         });
+        this.allusers = this.usersData;
         let loggedInUserIndex = this.usersData.findIndex(x => x.uid == this.loggedInUserId);
         this.loggedInUser = this.usersData.splice(loggedInUserIndex, 1);
         this.loggedInImageUrl = this.loggedInUser[0].ImageUrl;
@@ -186,6 +188,10 @@ export class ChatComponent implements OnInit {
       this.chats.map(x => x.updatedBy = new Date(x.updatedBy * 1000))
       this.showReadMoreButton = this.messageLimit <= this.chats.length;
     });
+  }
+
+  filterUser(event: any) {debugger
+    this.allusers = this.usersData.filter(item => item.UserName.toLowerCase().includes(event.target.value.toLowerCase()));
   }
 }
 
