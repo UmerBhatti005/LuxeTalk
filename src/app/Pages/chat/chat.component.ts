@@ -5,9 +5,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { ItemsService } from 'src/app/Services/Items/items.service';
 import { ToasterService } from 'src/app/Services/ToasterService/toaster.service';
-import { DocumentSnapshot } from '@angular/fire/firestore';
 import { MessageService } from 'primeng/api';
-
 
 @Component({
   selector: 'app-chat',

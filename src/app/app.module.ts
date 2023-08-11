@@ -13,7 +13,7 @@ import { SignUpComponent } from './Pages/sign-up/sign-up.component';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { UsersComponent } from './Pages/users/users.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MessageService } from 'primeng/api';
@@ -46,7 +46,7 @@ import { ToastModule } from 'primeng/toast';
     MatPaginatorModule,
     MatSelectModule,
     ToastModule
-   ],
+  ],
   providers: [MessageService],
   bootstrap: [AppComponent]
 })
