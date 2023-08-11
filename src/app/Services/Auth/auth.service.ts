@@ -104,7 +104,7 @@ export class AuthService {
       email: user.email,
       UserName: form.UserName,
       updatedBy: new Date(),
-      ImageUrl: 'https://res.cloudinary.com/dpcdpz5oo/image/upload/v1687359055/ckd2kdslt5combzf1dw4.jpg',
+      ImageUrl: form.ImageUrl,
     };
     return userRef.set(userData, {
       merge: true,

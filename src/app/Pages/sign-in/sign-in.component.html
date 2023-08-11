@@ -140,7 +140,8 @@
                 <input type="password" placeholder="Enter your password" id="Password" name="Password" formControlName="Password">
               </div>
               <div class="input-box">
-                <input type="file" (change)="handleFileInput($event)" />
+                <!-- <input type="file" (change)="handleFileInput($event)" /> -->
+                <input type="file" #fileInput />
                 <img [src]="imagePreview" *ngIf="imagePreview" alt="Preview" />
               </div>
               <div class="button input-box">

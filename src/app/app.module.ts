@@ -18,6 +18,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { StorageModule } from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -33,12 +35,13 @@ import { ToastModule } from 'primeng/toast';
     AppRoutingModule,
     // AngularFireDatabaseModule,
     // AngularFirestoreModule,
-    // AngularFireStorageModule
     // provideFirebaseApp(() => initializeApp(environment)),
     // provideFirestore(() => getFirestore())
     AngularFireModule.initializeApp(environment),
     AngularFireModule,
     AngularFireAuthModule,
+    AngularFirestoreModule,
+    StorageModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
