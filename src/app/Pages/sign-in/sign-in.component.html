@@ -1,86 +1,4 @@
 <p-toast position="top-right" key="save"></p-toast>
-<!-- <div class="displayTable">
-  <div class="displayTableCell">
-    <div class="authBlock">
-      <h3>Sign In</h3>
-      <div class="formGroup">
-        <input type="text" class="formControl" placeholder="Username" #userName required />
-      </div>
-      <div class="formGroup">
-        <input type="password" class="formControl" placeholder="Password" #userPassword required />
-      </div>
-      <div class="formGroup">
-        <input type="button" class="btn btnPrimary" value="Log in"
-          (click)="authService.SignIn(userName.value, userPassword.value)" />
-      </div>
-      <div class="formGroup">
-        <span class="or"><span class="orInner">Or</span></span>
-      </div>
-      <div class="forgotPassword">
-        <span routerLink="/forgot-password">Forgot Password?</span>
-      </div>
-    </div>
-    <div class="redirectToLogin">
-      <span>Don't have an account?<span class="redirect" routerLink="/register-user">
-          Sign Up</span></span>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="live"></div>
-</div> -->
-
-
-
-
-<!-- <div class="displayTable">
-    <div class="displayTableCell">
-      <div class="authBlock">
-        <h3>Full Name</h3>
-        <div class="formGroup">
-          <input
-            type="input"
-            class="formControl"
-            placeholder="Full Name"
-            #userName
-            required
-          />
-        </div>
-        <div class="formGroup">
-          <input
-            type="email"
-            class="formControl"
-            placeholder="Email Address"
-            #userEmail
-            required
-          />
-        </div>
-        <div class="formGroup">
-          <input type="password" class="formControl" placeholder="Password" #userPwd required />
-        </div>
-        <div class="formGroup">
-          <input type="password" class="formControl" placeholder="Confirm Password" #userCfrmPwd required />
-        </div>
-        <div class="formGroup">
-          <input
-            type="button"
-            class="btn btnPrimary"
-            value="Sign Up"
-            (click)="authService.SignUp(userName.value,userEmail.value, userPwd.value,userCfrmPwd.value)"
-          />
-        </div>
-        <div class="formGroup">
-          <span class="or"><span class="orInner">Or</span></span>
-        </div>
-      <div class="redirectToLogin">
-        <span
-          >Already have an account?
-          <span class="redirect" routerLink="/sign-in">Log In</span></span
-        >
-      </div>
-    </div>
-  </div> -->
 
 <div id="app-sign-in">
   <div class="container">
@@ -94,7 +12,7 @@
         </div>
       </div>
       <div class="back">
-        <img class="backImg" src="/src/assets/Images/frontImg.jpg" alt="">
+        <img class="backImg" src="/assets/Images/frontImg.jpg" alt="">
         <div class="text">
           <span class="text-1">Complete miles of journey <br> with one step</span>
           <span class="text-2">Let's get started</span>
@@ -109,11 +27,11 @@
             <div class="input-boxes">
               <div class="input-box">
                 <i class="fas fa-envelope"></i>
-                <input type="email" id="Email" name="Email" placeholder="Enter your email" formControlName="Email">
+                <input type="email" id="lgnEmail" name="lgnEmail" placeholder="Enter your Email" formControlName="Email">
               </div>
               <div class="input-box">
                 <i class="fas fa-lock"></i>
-                <input type="password" placeholder="Enter your password" id="Password" name="Password" formControlName="Password">
+                <input type="password" placeholder="Enter your password" id="lgnPassword" name="lgnPassword" formControlName="Password">
               </div>
               <div class="text"><a href="#">Forgot password?</a></div>
               <div class="button input-box">
@@ -129,20 +47,19 @@
             <div class="input-boxes">
               <div class="input-box">
                 <i class="fas fa-user"></i>
-                <input type="text" placeholder="Enter your name" id="UserName" name="UserName" formControlName="UserName">
+                <input type="text" placeholder="Enter your name" id="rgtrUserName" name="rgtrUserName" formControlName="UserName">
               </div>
               <div class="input-box">
                 <i class="fas fa-envelope"></i>
-                <input type="text" placeholder="Enter your email" id="Email" name="Email" formControlName="Email">
+                <input type="text" placeholder="Enter your email" id="rgtrEmail" name="rgtrEmail" formControlName="Email">
               </div>
               <div class="input-box">
                 <i class="fas fa-lock"></i>
-                <input type="password" placeholder="Enter your password" id="Password" name="Password" formControlName="Password">
+                <input type="password" placeholder="Enter your password" id="rgtrPassword" name="rgtrPassword" formControlName="Password">
               </div>
               <div class="input-box">
-                <!-- <input type="file" (change)="handleFileInput($event)" /> -->
                 <input type="file" #fileInput />
-                <img [src]="imagePreview" *ngIf="imagePreview" alt="Preview" />
+                <!-- <img [src]="imagePreview" *ngIf="imagePreview" alt="Preview" /> -->
               </div>
               <div class="button input-box">
                 <input type="submit" value="Sumbit">

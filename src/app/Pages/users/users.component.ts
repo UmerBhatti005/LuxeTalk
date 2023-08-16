@@ -8,27 +8,30 @@ import { ItemsService } from 'src/app/Services/Items/items.service';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements AfterViewInit {
 
   usersData: any = [];
   displayedColumns: string[] = ['position', 'name'];
   dataSource = new MatTableDataSource<any>(this.usersData);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   totalRecords: any;
+  Take: number = 5;
+  Skip: number = 0;
+  pageNumber: number;
 
 
 
   constructor(private itemService: ItemsService) {
 
   }
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.itemService.firebaseTable = 'users';
     this.dataSource.paginator = this.paginator;
     this.GetAllUser();
   }
 
-  GetAllUser() {
-    this.itemService.GetItemsWithPagination(this.paginator).subscribe(
+  GetAllUser() {debugger
+    this.itemService.GetItemsWithPagination(this.Take, this.Skip).subscribe(
       (res: any) => {
         this.usersData = res.map(e => {
           return {
@@ -43,9 +46,12 @@ export class UsersComponent implements OnInit {
     )
   }
 
-  onPageChange(event: PageEvent): void {
-    this.paginator.pageIndex =  this.usersData[this.usersData.length - 1];;
-    this.paginator.pageSize = event.pageSize;
+  onPageChange(event: PageEvent): void {debugger
+    // this.paginator.pageIndex =  this.usersData[this.usersData.length - 1];;
+    // this.paginator.pageSize = event.pageSize;
+    this.Take = event.pageSize;
+    this.pageNumber = event.pageIndex + 1
+    this.Skip = this.Take * this.pageNumber - this.Take;
     this.GetAllUser();
   }
 }

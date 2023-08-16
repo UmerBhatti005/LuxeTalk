@@ -19,6 +19,7 @@ export class AuthService {
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public toastrService: ToasterService
   ) {
+    
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
     this.afAuth.authState.subscribe((user) => {
@@ -114,8 +115,9 @@ export class AuthService {
   SignOut() {
     return this.afAuth.signOut().then(() => {
       localStorage.removeItem('user');
-      this.router.navigate(['sign-in']);
+      this.toastrService.message('User Logout Successfully.');
     });
   }
 
+  
 }

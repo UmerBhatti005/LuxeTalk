@@ -20,6 +20,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { StorageModule } from '@angular/fire/storage';
+import { BadgeModule } from 'primeng/badge';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { StorageModule } from '@angular/fire/storage';
     MatTableModule,
     MatPaginatorModule,
     MatSelectModule,
-    ToastModule
+    ToastModule,
+    BadgeModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

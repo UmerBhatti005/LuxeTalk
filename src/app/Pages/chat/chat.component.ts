@@ -2,10 +2,9 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, zip } from 'rxjs';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { ItemsService } from 'src/app/Services/Items/items.service';
-import { ToasterService } from 'src/app/Services/ToasterService/toaster.service';
-import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-chat',
@@ -32,26 +31,22 @@ export class ChatComponent implements OnInit {
   messageSkip: number = 0;
   msgRequired: boolean = false;
   allusers: any;
-
+  unreadMsgs: any[] = [];
+  onlineStatus: boolean;
 
   constructor(public afs: AngularFirestore, // Inject Firestore service,
     public afAuth: AngularFireAuth, // Inject Firebase auth service
-    private itemService: ItemsService,
-    private toastrService: ToasterService,
-    private messageService: MessageService) {
-
+    private itemService: ItemsService) {
+      this.onlineStatus = navigator.onLine;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+
     this.itemService.firebaseTable = 'chatMsg';
     this.GetAllUser();
-    // this.GetMsgs('');
-    // this.afAuth.authState.subscribe((user: any) => {
-    //   if (user) {
-    //     this.loggedInUserId = user._delegate.uid;
-    //   }
-    // });
+    this.GetUnreadMsgsCount();
     this.loggedInUserId = JSON.parse(localStorage.getItem('user')).uid;
+    this.itemService.setUserPresence({UserId: this.loggedInUserId, updatedBy: new Date(), status: 'online', });
   }
 
   GetAllUser() {
@@ -72,6 +67,36 @@ export class ChatComponent implements OnInit {
     )
   }
 
+  async GetUnreadMsgsCount(){
+    this.unreadMsgs = [];
+    let unreadMsgsObj = await this.itemService.GetUnReadMsgs();
+    unreadMsgsObj.subscribe(res => {
+      this.unreadMsgs = [];
+      // res.map(res => {
+      //   // if(!res.readMsg){
+      //   //   res.
+      //   // }
+      // })
+      // this.unreadMsgs = x
+      const idCountMap = new Map(); // Create a map to store ID counts
+
+      res.forEach(item => {
+        const id = item.UserId; // Assuming UserId contains the ID
+
+        // Check if the ID already exists in the map
+        if (idCountMap.has(id) && !item.msgRead) {
+          idCountMap.set(id, idCountMap.get(id) + 1); // Increment count
+        } else if(!item.msgRead) {
+          idCountMap.set(id, 1); // Initialize count
+        }
+      });
+
+      // Display the ID counts
+      idCountMap.forEach((count, id) => {
+        this.unreadMsgs.push({ Id: id, msgUnreadCount: count })
+      });
+    });
+  }
   // GetMsgs(openChatPerson: string) {
   //   this.chats = [];
   //   this.itemService.firebaseTable = 'chatMsg';
@@ -117,13 +142,19 @@ export class ChatComponent implements OnInit {
   //   // )
   // }
   chatMessages$: Observable<any[]>; // Declare an Observable variable
-  GetMsgs(openChatPerson: string) {
+  GetMsgs(openChatPerson: string) {debugger
     this.GetSpecificUser(openChatPerson);
     this.chats = [];
     this.showChatBoxBool = true;
     this.openChatPerson = openChatPerson;
     this.itemService.firebaseTable = 'chatMsg';
     this.GenericGetMessage();
+    let idxReadmsg = this.unreadMsgs.findIndex(x => x.Id == openChatPerson)
+    idxReadmsg >= 0 ? this.unreadMsgs.splice(idxReadmsg, 1) : ''
+    // this.unreadMsgs
+    // let obj :{msgRead: false};
+    // this.itemService.UpdateMsgsRead(obj);
+    // this.chatMsg.filter(x =>)
     // this.chatMessages$ = this.itemService.GetchatofTwoPeople({
     //   loggedInUser: this.loggedInUserId, // Replace with actual user IDs
     //   openChatPerson: openChatPerson,
@@ -160,19 +191,20 @@ export class ChatComponent implements OnInit {
         chatMsg: this.chatMsg,
         updatedBy: new Date(),
         UserId: this.loggedInUserId,
-        SendToUser: this.openChatPerson
+        SendToUser: this.openChatPerson,
+        msgRead: false
       }
       this.itemService.CreateItem(obj);
       this.chatMsg = '';
     }
   }
 
-  showMoreMessages(): void {
-    this.messageLimit += 15; // Increase the message limit
+  showMoreMessages() {debugger
     // this.messageSkip += 15;
     this.itemService.firebaseTable = 'chatMsg';
     this.GenericGetMessage();
     this.showReadMoreButton = this.messageLimit <= this.chats.length;
+    this.messageLimit += 15; // Increase the message limit
   }
 
   GenericGetMessage() {
@@ -184,14 +216,50 @@ export class ChatComponent implements OnInit {
     this.chatMessages$.subscribe((messages: any) => {
       console.log(messages); // Handle the retrieved data here
       // this.chats.push.apply(this.chats, messages)
-      this.chats = messages;
-      this.chats.map(x => x.updatedBy = new Date(x.updatedBy * 1000))
-      this.showReadMoreButton = this.messageLimit <= this.chats.length;
+      this.chats = messages.map(e => {
+        return {
+          id: e.payload.doc.id,
+          chatMsg: e.payload.doc.data().chatMsg,
+          updatedBy: new Date(e.payload.doc.data().updatedBy * 1000),
+          UserId: e.payload.doc.data().UserId,
+          SendToUser: e.payload.doc.data().SendToUser,
+          msgRead: e.payload.doc.data().msgRead
+        }
+      });
+      // let obj = this.chats.filter(x => x.msgRead == false)
+      // let obj = this.chats.filter(x => x.msgRead == false).map(x => x.id);
+      let obj = this.chats.filter(x => x.msgRead == false && x.UserId != this.loggedInUserId).map(x => x.id);
+
+      this.itemService.updateColumnInMultipleDocuments(obj)
+
+      // return '';
+
+      // this.chats = messages;
+      // this.chats.map(x => x.updatedBy = new Date(x.updatedBy * 1000))
+      // this.showReadMoreButton = this.messageLimit <= this.chats.length;
     });
+
   }
 
-  filterUser(event: any) {debugger
+  filterUser(event: any) {
     this.allusers = this.usersData.filter(item => item.UserName.toLowerCase().includes(event.target.value.toLowerCase()));
   }
-}
 
+  checkMsgUnreadFunc(id: any): string {
+    for (let i = 0; i < this.unreadMsgs.length; i++) {
+      if (this.unreadMsgs[i].Id == id) {
+        return this.unreadMsgs[i].msgUnreadCount;
+      }
+    }
+    return '';
+  }
+
+  showMsgUnreadFunc(id: any): boolean {
+    for (let i = 0; i < this.unreadMsgs.length; i++) {
+      if (this.unreadMsgs[i].Id == id) {
+        return true
+      }
+    }
+    return false;
+  }
+}

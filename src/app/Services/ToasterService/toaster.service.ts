@@ -31,7 +31,7 @@ export class ToasterService {
         this.messageService.add({ severity: 'error', summary: msg });
     }
     message(msg: any) {
-        this.messageService.add({ severity: 'success', summary: msg })
+        this.messageService.add({ key: 'save', severity: 'success', summary: msg })
     }
     emptyField(msg: any) {
         this.messageService.add({ severity: 'error', summary: msg })

@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryFn } from '@angular/fire/compat/firestore';
-import { Observable, map } from 'rxjs';
+import { Observable, first, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemsService {
+  userId: string;
 
-  constructor(private fireStore: AngularFirestore) { }
+  constructor(private fireStore: AngularFirestore) {
+    this.userId = JSON.parse(localStorage.getItem('user')).uid;
+  }
 
   firebaseTable: string = '';
 
-  GetItemsWithPagination(req: any) {
+  GetItemsWithPagination(take: any, skip: any) {
     const queryFn: QueryFn = ref => ref
-      .orderBy("email")
-      .startAfter(req._pageIndex)
-      .limit(req._pageSize);
+      .orderBy("updatedBy", 'desc')
+      // .startAfter(skip)
+      // .limit(take);
     return this.fireStore.collection(this.firebaseTable, queryFn).snapshotChanges();
   }
 
@@ -23,9 +26,6 @@ export class ItemsService {
     return this.fireStore.collection(this.firebaseTable, ref => ref.orderBy('updatedBy', 'asc')).snapshotChanges();
   }
 
-  // GetchatofTwoPeople(obj: any) {
-  //   return this.fireStore.firestore.collection(this.firebaseTable).where('UserId', 'in', [obj.loggedInUser, obj.openChatPerson]);
-  // }
 
   GetchatofTwoPeople(obj: { loggedInUser: string, openChatPerson: string }, take: number, skip: any): Observable<any[]> {
     return this.fireStore.collection(this.firebaseTable, ref => {
@@ -34,11 +34,11 @@ export class ItemsService {
         .where('SendToUser', 'in', [obj.loggedInUser, obj.openChatPerson])
         .orderBy('updatedBy', 'desc')
         //.startAfter(skip)
-         .limit(take)
-    }).valueChanges();
+        .limit(take)
+    }).snapshotChanges();
   }
 
-  GetItemById(id) {
+  GetItemById(id: any) {
     return this.fireStore.collection(this.firebaseTable).doc(id).snapshotChanges();
   }
 
@@ -52,13 +52,43 @@ export class ItemsService {
     })
   }
 
-  UpdateItem(student: any, id) {
+  UpdateMsgs(obj: any, id) {
     return new Promise<any>((resolve, reject) => {
-      this.fireStore.collection(this.firebaseTable).doc(id).update(student).then((reponse: any) => {
+      this.fireStore.collection(this.firebaseTable).doc(id).update(obj).then((reponse: any) => {
         console.log(reponse);
       }, error => {
         console.log(error);
 
+      })
+    })
+  }
+
+  async updateColumnInMultipleDocuments(documentIds: string[]): Promise<void> {
+    const batch = this.fireStore.firestore.batch();
+
+    documentIds.forEach((docId) => {
+      const docRef = this.fireStore.collection(this.firebaseTable).doc(docId).ref;
+      batch.update(docRef, { ['msgRead']: true });
+    });
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error('Error updating documents:', error);
+    }
+  }
+
+  GetUnReadMsgs(): Observable<any[]> {
+    return this.fireStore.collection('chatMsg', ref => ref.where('SendToUser', '==', this.userId)).valueChanges().pipe(
+      map((documents: any[]) => documents.map(document => ({
+        UserId: document['UserId'],
+        msgRead: document['msgRead']
+      })))
+    );
+  }
+
+  UpdateItem(student: any, id) {
+    return new Promise<any>((resolve, reject) => {
+      this.fireStore.collection(this.firebaseTable).doc(id).update(student).then((reponse: any) => {
       })
     })
   }
@@ -81,5 +111,30 @@ export class ItemsService {
           snapshot =>
             snapshot.size
         ));
+  }
+
+  async setUserPresence(obj: any) {
+    await this.GetUserPresence(obj).subscribe((res: any) => {
+      let docId = res[0]?.payload?.doc?.id
+      if (res.length == 0) {
+        this.fireStore.collection('userPresence').add(obj);
+      }
+      else {
+        this.fireStore.collection('userPresence').doc(docId).update(obj);
+      }
+    });
+
+    // if(a)
+    // return new Promise<any>((resolve, reject) => {
+    //   this.fireStore.collection('userPresence').add(obj).then((reponse: any) => {
+    //     console.log(reponse);
+    //   }, error => {
+    //     console.log(error);
+    //   })
+    // })
+  }
+
+  GetUserPresence(id: any) {
+    return this.fireStore.collection('userPresence', ref => ref.where('online', '==', false)).snapshotChanges();
   }
 }
