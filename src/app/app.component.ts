@@ -24,9 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService,
     public afAuth: AngularFireAuth,
     private itemService: ItemsService,
-    private idleService: IdleService,
-    private typingService: TypingService) {
-    // this.setTimeout();
+    private idleService: IdleService) {
     this.userInactive.subscribe(() => console.log('user has been inactive for 5s'));
   }
 

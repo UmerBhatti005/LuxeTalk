@@ -32,14 +32,12 @@ export class ChatComponent implements OnInit {
   msgRequired: boolean = false;
   allusers: any;
   unreadMsgs: any[] = [];
-  onlineStatus: boolean;
-  typingStatus: any;
-  openchatTypingStatus: any;
+  // typingStatus: any;
+  // openchatTypingStatus: any;
 
   constructor(public afs: AngularFirestore, // Inject Firestore service,
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     private itemService: ItemsService) {
-    this.onlineStatus = navigator.onLine;
   }
 
   async ngOnInit(): Promise<void> {
@@ -48,7 +46,6 @@ export class ChatComponent implements OnInit {
     this.GetAllUser();
     this.GetUserPresence();
     this.GetUnreadMsgsCount();
-    this.GetTypingStatus();
     this.loggedInUserId = JSON.parse(localStorage.getItem('user'))?.uid;
   }
 
@@ -149,15 +146,15 @@ export class ChatComponent implements OnInit {
     })
   }
 
-  GetTypingStatus() {
-    this.itemService.GetAllTypingStatus().subscribe((res: any) => {
-      debugger
-      this.typingStatus = res;
-      if(this.openChatPerson != null){
-        this.openchatTypingStatus = res.filter(x => x.UserId == this.openChatPerson)[0]?.isTyping;
-      }
-    })
-  }
+  // GetTypingStatus() {
+  //   this.itemService.GetAllTypingStatus().subscribe((res: any) => {
+  //     debugger
+  //     this.typingStatus = res;
+  //     if(this.openChatPerson != null){
+  //       this.openchatTypingStatus = res.filter(x => x.UserId == this.openChatPerson)[0]?.isTyping;
+  //     }
+  //   })
+  // }
 
   GenericGetMessage() {
     this.chatMessages$ = this.itemService.GetchatofTwoPeople({
