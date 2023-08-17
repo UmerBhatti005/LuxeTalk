@@ -9,7 +9,7 @@ export class ItemsService {
   userId: string;
 
   constructor(private fireStore: AngularFirestore) {
-    this.userId = JSON.parse(localStorage.getItem('user')).uid;
+    this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
   }
 
   firebaseTable: string = '';
@@ -17,8 +17,8 @@ export class ItemsService {
   GetItemsWithPagination(take: any, skip: any) {
     const queryFn: QueryFn = ref => ref
       .orderBy("updatedBy", 'desc')
-      // .startAfter(skip)
-      // .limit(take);
+    // .startAfter(skip)
+    // .limit(take);
     return this.fireStore.collection(this.firebaseTable, queryFn).snapshotChanges();
   }
 
@@ -113,28 +113,48 @@ export class ItemsService {
         ));
   }
 
-  async setUserPresence(obj: any) {
-    await this.GetUserPresence(obj).subscribe((res: any) => {
-      let docId = res[0]?.payload?.doc?.id
-      if (res.length == 0) {
-        this.fireStore.collection('userPresence').add(obj);
-      }
-      else {
-        this.fireStore.collection('userPresence').doc(docId).update(obj);
-      }
-    });
-
-    // if(a)
-    // return new Promise<any>((resolve, reject) => {
-    //   this.fireStore.collection('userPresence').add(obj).then((reponse: any) => {
-    //     console.log(reponse);
-    //   }, error => {
-    //     console.log(error);
-    //   })
-    // })
+  setUserPresence(obj: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.GetUserPresence(obj.UserId).subscribe((res: any) => {
+        let docId = res[0]?.payload?.doc?.id
+        if (res.length == 0) {
+          this.fireStore.collection('userPresence').add(obj);
+        }
+        else {
+          this.fireStore.collection('userPresence').doc(docId).update(obj);
+        }
+        resolve('');
+      });
+    })
   }
 
+  GetAllUserPresence() {
+    return this.fireStore.collection('userPresence').valueChanges();
+  }
   GetUserPresence(id: any) {
-    return this.fireStore.collection('userPresence', ref => ref.where('online', '==', false)).snapshotChanges();
+    return this.fireStore.collection('userPresence', ref => ref.where('UserId', '==', id)).snapshotChanges();
+  }
+
+  setTypingStatus(obj: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.GetTypingStatus(obj.UserId).subscribe((res: any) => {
+        let docId = res[0]?.payload?.doc?.id
+        if (res.length == 0) {
+          this.fireStore.collection('typingStatus').add(obj);
+        }
+        else {
+          this.fireStore.collection('typingStatus').doc(docId).update(obj);
+        }
+        resolve('');
+      });
+    })
+  }
+
+  GetTypingStatus(id: any) {
+    return this.fireStore.collection('typingStatus', ref => ref.where('UserId', '==', id)).snapshotChanges();
+  }
+
+  GetAllTypingStatus() {
+    return this.fireStore.collection('typingStatus').valueChanges();
   }
 }

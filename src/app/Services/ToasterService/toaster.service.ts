@@ -7,7 +7,7 @@ export class ToasterService {
     constructor(private messageService: MessageService) {
     }
     logedInSuccessfully() {
-        this.messageService.add({ key: 'save', severity: 'success', summary: 'Logged In Successfully', detail: JSON.parse(localStorage.getItem('user')).email });
+        this.messageService.add({ key: 'save', severity: 'success', summary: 'Logged In Successfully', detail: JSON.parse(localStorage.getItem('user'))?.email });
     }
     customSuccess(msg: any) {
         this.messageService.add({ severity: 'success', summary: msg });

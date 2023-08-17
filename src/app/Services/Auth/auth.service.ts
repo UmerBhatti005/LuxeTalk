@@ -19,7 +19,7 @@ export class AuthService {
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public toastrService: ToasterService
   ) {
-    
+
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
     this.afAuth.authState.subscribe((user) => {
@@ -37,23 +37,28 @@ export class AuthService {
     });
   }
   // Sign in with email/password
-  SignIn(formValue: any) {
+  SignIn(formValue: any): Promise<any> {
 
-    return this.afAuth
-      .signInWithEmailAndPassword(formValue.Email, formValue.Password)
-      .then((result) => {
-        // this.SetUserData(result.user, formValue);
-        this.afAuth.authState.subscribe((user) => {
-          if (user) {
-            // this.router.navigate(['dashboard']);
-          }
-          this.toastrService.logedInSuccessfully();
-        });
-      })
-      .catch((error) => {
-        window.alert(error.message);
-      });
+    return new Promise((resolve, reject) => {
+      this.afAuth
+        .signInWithEmailAndPassword(formValue.Email, formValue.Password)
+        .then((result) => {
+          // this.SetUserData(result.user, formValue);
+          this.afAuth.authState.subscribe((user) => {
+            if (user) {
+              localStorage.removeItem('user');
+              localStorage.setItem('user', JSON.stringify(user));
+            }
+            resolve(user)
+            this.toastrService.logedInSuccessfully();
+          });
+        })
+        .catch((error) => {
+          window.alert(error.message);
+        })
+    })
   }
+
   // Sign up with email/password
   SignUp(form: any) {
     return this.afAuth
@@ -112,12 +117,14 @@ export class AuthService {
     });
   }
   // Sign out
-  SignOut() {
-    return this.afAuth.signOut().then(() => {
-      localStorage.removeItem('user');
-      this.toastrService.message('User Logout Successfully.');
-    });
+  SignOut(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.afAuth.signOut().then(() => {
+        localStorage.removeItem('user');
+        this.toastrService.message('User Logout Successfully.');
+        this.userData = null;
+        resolve('');
+      });
+    })
   }
-
-  
 }

@@ -6,6 +6,8 @@ import { ToasterService } from 'src/app/Services/ToasterService/toaster.service'
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { initializeApp } from 'firebase/app';
 import { environment } from 'src/environments/environment';
+import { ItemsService } from 'src/app/Services/Items/items.service';
+import { UserPresence } from 'src/app/appModel/chat-model';
 
 @Component({
   selector: 'app-sign-in',
@@ -29,8 +31,7 @@ export class SignInComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private fb: FormBuilder,
-    private toastrNotification: ToasterService,
-    private messageService: MessageService
+    private itemService: ItemsService
   ) {
   }
   ngOnInit(): void {
@@ -59,12 +60,19 @@ export class SignInComponent implements OnInit {
       { validators: passwordMatchingValidatior })
   }
 
-  Login() {
-    this.authService.SignIn(this.loginForm.value)
+
+  async Login() {
+    await this.authService.SignIn(this.loginForm.value);
+    let obj: UserPresence = {
+      Status: 'Online',
+      UserId: JSON.parse(localStorage.getItem('user')).uid,
+      updatedBy: new Date()
+    }
+    this.itemService.setUserPresence(obj)
   }
 
   async Register() {
-    let imageUrl =  await this.uploadImageAndGetURL(this.fileInput.nativeElement.files[0]);
+    let imageUrl = await this.uploadImageAndGetURL(this.fileInput.nativeElement.files[0]);
     this.registerForm.value.ImageUrl = imageUrl;
     this.authService.SignUp(this.registerForm.value)
   }
@@ -77,67 +85,6 @@ export class SignInComponent implements OnInit {
 
     return getDownloadURL(storageRef);
   }
-
-  // saveImageURLToFirestore(url: string): Promise<void> {
-  //   return this.firestore.collection('images').add({ imageUrl: url });
-  // }
-
-  // handleFileInput(event: any): void {
-  //   if (event == null) return;
-  //   const file = event.target.files[0];
-
-  //   const storage = getStorage();
-  //   // Create a reference to 'mountains.jpg'
-  //   const storageRef  = ref(storage);
-  //   // Generate a unique filename for the uploaded file
-  //   const uniqueFilename = `${Date.now()}_${file.name}`;
-  //   // Create a reference to 'images/mountains.jpg'
-  //   const fileRef = ref(storageRef, uniqueFilename);
-  //   // const mountainImagesRef = ref(storage);
-
-  //   // // While the file names are the same, the references point to different files
-  //   // storageRef.name === mountainImagesRef.name;           // true
-  //   // storageRef.fullPath === mountainImagesRef.fullPath;   // false 
-
-  //   uploadBytes(fileRef, file).then((snapshot) => {
-  //     let imageUrl = getDownloadURL(fileRef);
-  //     let a = snapshot.ref.fullPath;
-  //     console.log('Uploaded a blob or file!', a);
-  //   }).then(downloadURL => {
-  //     console.log('Image uploaded and URL retrieved:', downloadURL);
-  //   })
-  //     .catch(error => {
-  //       console.error('Error uploading file:', error);
-  //     });
-  //   // const file = event.target.files[0];
-  //   // const uploadOptions: cloudinary.Configuration.Options = {
-  //   //   api_key: environment.cloudinary.apiKey,
-  //   //   uploadPreset: 'default', // You need to set up an upload preset in your Cloudinary account
-  //   //   api_secret: environment.cloudinary.ApiSecret,
-  //   //   cloud_name: environment.cloudinary.cloudName,
-  //   // };
-  //   // this.cloudinary.uploadImage .uploader.upload(file, uploadOptions, (error, result) => {
-  //   //   if (error) {
-  //   //     console.error('Upload error:', error);
-  //   //   } else {
-  //   //     console.log('Upload result:', result);
-  //   //     this.imagePreview = result.secure_url;
-  //   //   }
-  //   // });
-  // }
-
-  // async handleFileInput(event: any): Promise<void> {
-  //   if (event != null) {
-  //     try {
-  //       const file = event.target.files[0];
-  //       const url = await this.uploadImageAndGetURL(file);
-  //       // await this.saveImageURLToFirestore(url);
-  //       console.log('Image uploaded and URL saved to Firestore.', url);
-  //     } catch (error) {
-  //       console.error('Error uploading image:', error);
-  //     }
-  //   }
-  // }
 }
 
 

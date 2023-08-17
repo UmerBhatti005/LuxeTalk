@@ -30,7 +30,7 @@ export class UsersComponent implements AfterViewInit {
     this.GetAllUser();
   }
 
-  GetAllUser() {debugger
+  GetAllUser() {
     this.itemService.GetItemsWithPagination(this.Take, this.Skip).subscribe(
       (res: any) => {
         this.usersData = res.map(e => {
@@ -46,9 +46,7 @@ export class UsersComponent implements AfterViewInit {
     )
   }
 
-  onPageChange(event: PageEvent): void {debugger
-    // this.paginator.pageIndex =  this.usersData[this.usersData.length - 1];;
-    // this.paginator.pageSize = event.pageSize;
+  onPageChange(event: PageEvent): void {
     this.Take = event.pageSize;
     this.pageNumber = event.pageIndex + 1
     this.Skip = this.Take * this.pageNumber - this.Take;

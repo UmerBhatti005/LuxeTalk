@@ -33,20 +33,23 @@ export class ChatComponent implements OnInit {
   allusers: any;
   unreadMsgs: any[] = [];
   onlineStatus: boolean;
+  typingStatus: any;
+  openchatTypingStatus: any;
 
   constructor(public afs: AngularFirestore, // Inject Firestore service,
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     private itemService: ItemsService) {
-      this.onlineStatus = navigator.onLine;
+    this.onlineStatus = navigator.onLine;
   }
 
   async ngOnInit(): Promise<void> {
 
     this.itemService.firebaseTable = 'chatMsg';
     this.GetAllUser();
+    this.GetUserPresence();
     this.GetUnreadMsgsCount();
-    this.loggedInUserId = JSON.parse(localStorage.getItem('user')).uid;
-    this.itemService.setUserPresence({UserId: this.loggedInUserId, updatedBy: new Date(), status: 'online', });
+    this.GetTypingStatus();
+    this.loggedInUserId = JSON.parse(localStorage.getItem('user'))?.uid;
   }
 
   GetAllUser() {
@@ -63,21 +66,16 @@ export class ChatComponent implements OnInit {
         let loggedInUserIndex = this.usersData.findIndex(x => x.uid == this.loggedInUserId);
         this.loggedInUser = this.usersData.splice(loggedInUserIndex, 1);
         this.loggedInImageUrl = this.loggedInUser[0].ImageUrl;
+
       }
     )
   }
 
-  async GetUnreadMsgsCount(){
+  async GetUnreadMsgsCount() {
     this.unreadMsgs = [];
     let unreadMsgsObj = await this.itemService.GetUnReadMsgs();
     unreadMsgsObj.subscribe(res => {
       this.unreadMsgs = [];
-      // res.map(res => {
-      //   // if(!res.readMsg){
-      //   //   res.
-      //   // }
-      // })
-      // this.unreadMsgs = x
       const idCountMap = new Map(); // Create a map to store ID counts
 
       res.forEach(item => {
@@ -86,7 +84,7 @@ export class ChatComponent implements OnInit {
         // Check if the ID already exists in the map
         if (idCountMap.has(id) && !item.msgRead) {
           idCountMap.set(id, idCountMap.get(id) + 1); // Increment count
-        } else if(!item.msgRead) {
+        } else if (!item.msgRead) {
           idCountMap.set(id, 1); // Initialize count
         }
       });
@@ -97,52 +95,9 @@ export class ChatComponent implements OnInit {
       });
     });
   }
-  // GetMsgs(openChatPerson: string) {
-  //   this.chats = [];
-  //   this.itemService.firebaseTable = 'chatMsg';
-  //   let obj = {
-  //     loggedInUser: this.loggedInUserId,
-  //     openChatPerson: openChatPerson
-  //   };
-  //   this.itemService.GetchatofTwoPeople(obj).then((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       // Access the document data
-  //       let chatModel = {
-  //         id: doc.id,
-  //         name: doc.data().name,
-  //         UserId: doc.data().UserId,
-  //         chatMsg: doc.data().chatMsg,
-  //         updatedBy: new Date(doc.data().updatedBy * 1000),
-  //       }
-  //       this.chats.push(chatModel);
-  //       console.log(this.chats);
 
-  //     });
-  //   }).catch((error) => {
-  //     console.error("Error getting documents: ", error);
-  //   });
-  //   // .get().then((querySnapshot) => {
-  //   //   querySnapshot.forEach((res) => {
-  //   //     console.log(res);
-
-  //   //   })
-  //   // })
-  //   // .subscribe(
-  //   //   (res: any) => {
-  //   //     this.chats = res.map(e => {
-  //   //       return {
-  //   //         id: e.payload.doc.id,
-  //   //         name : e.payload.doc.data().name,
-  //   //         UserId : e.payload.doc.data().UserId,
-  //   //         chatMsg : e.payload.doc.data().chatMsg,
-  //   //         updatedBy : new Date(e.payload.doc.data().updatedBy * 1000),
-  //   //       }
-  //   //     });
-  //   //   }
-  //   // )
-  // }
   chatMessages$: Observable<any[]>; // Declare an Observable variable
-  GetMsgs(openChatPerson: string) {debugger
+  GetMsgs(openChatPerson: string) {
     this.GetSpecificUser(openChatPerson);
     this.chats = [];
     this.showChatBoxBool = true;
@@ -151,27 +106,6 @@ export class ChatComponent implements OnInit {
     this.GenericGetMessage();
     let idxReadmsg = this.unreadMsgs.findIndex(x => x.Id == openChatPerson)
     idxReadmsg >= 0 ? this.unreadMsgs.splice(idxReadmsg, 1) : ''
-    // this.unreadMsgs
-    // let obj :{msgRead: false};
-    // this.itemService.UpdateMsgsRead(obj);
-    // this.chatMsg.filter(x =>)
-    // this.chatMessages$ = this.itemService.GetchatofTwoPeople({
-    //   loggedInUser: this.loggedInUserId, // Replace with actual user IDs
-    //   openChatPerson: openChatPerson,
-    // }, this.messageLimit, 0);
-
-    // this.chatMessages$.subscribe((messages: any) => {
-    //   console.log(messages); // Handle the retrieved data here
-    //   // let chatModel = {
-    //   //           // id: messages.id,
-    //   //           name: messages.name,
-    //   //           UserId: messages.UserId,
-    //   //           chatMsg: messages.chatMsg,
-    //   //           updatedBy: new Date(messages.updatedBy * 1000),
-    //   //         }
-    //   this.chats = messages;
-    //   this.chats.map(x => x.updatedBy = new Date(x.updatedBy * 1000))
-    // });
   }
 
   GetSpecificUser(openChatPerson) {
@@ -199,12 +133,30 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  showMoreMessages() {debugger
-    // this.messageSkip += 15;
+  showMoreMessages() {
     this.itemService.firebaseTable = 'chatMsg';
     this.GenericGetMessage();
     this.showReadMoreButton = this.messageLimit <= this.chats.length;
     this.messageLimit += 15; // Increase the message limit
+  }
+
+  GetUserPresence() {
+    this.itemService.GetAllUserPresence().subscribe((res: any) => {
+      this.allusers = this.allusers.map(item1 => {
+        const matchingItem = res.find(item2 => item2.UserId === item1.id);
+        return matchingItem ? { ...item1, ...matchingItem } : { ...item1, ...{ Status: 'Offline' } };
+      });
+    })
+  }
+
+  GetTypingStatus() {
+    this.itemService.GetAllTypingStatus().subscribe((res: any) => {
+      debugger
+      this.typingStatus = res;
+      if(this.openChatPerson != null){
+        this.openchatTypingStatus = res.filter(x => x.UserId == this.openChatPerson)[0]?.isTyping;
+      }
+    })
   }
 
   GenericGetMessage() {
@@ -215,7 +167,6 @@ export class ChatComponent implements OnInit {
 
     this.chatMessages$.subscribe((messages: any) => {
       console.log(messages); // Handle the retrieved data here
-      // this.chats.push.apply(this.chats, messages)
       this.chats = messages.map(e => {
         return {
           id: e.payload.doc.id,
@@ -226,17 +177,8 @@ export class ChatComponent implements OnInit {
           msgRead: e.payload.doc.data().msgRead
         }
       });
-      // let obj = this.chats.filter(x => x.msgRead == false)
-      // let obj = this.chats.filter(x => x.msgRead == false).map(x => x.id);
       let obj = this.chats.filter(x => x.msgRead == false && x.UserId != this.loggedInUserId).map(x => x.id);
-
       this.itemService.updateColumnInMultipleDocuments(obj)
-
-      // return '';
-
-      // this.chats = messages;
-      // this.chats.map(x => x.updatedBy = new Date(x.updatedBy * 1000))
-      // this.showReadMoreButton = this.messageLimit <= this.chats.length;
     });
 
   }
