@@ -2,8 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable, zip } from 'rxjs';
-import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { Observable } from 'rxjs';
 import { ItemsService } from 'src/app/Services/Items/items.service';
 
 @Component({

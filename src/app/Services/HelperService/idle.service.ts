@@ -8,7 +8,7 @@ import { ItemsService } from '../Items/items.service';
 })
 export class IdleService {
 
-  private inactivityTimeout: number = 1200000; // 20 minutes of inactivity
+  private inactivityTimeout: number = 600000; // 10 minutes of inactivity
   private lastActivityTime: number = Date.now();
   private activity$: Subject<void> = new Subject<void>();
 
