@@ -42,7 +42,10 @@
                             </div>
                             <div class="flex-grow-1 pl-3">
                                 <strong>{{UserName}}</strong>
-                                <div class="text-muted small"><em>Typing...</em></div>
+                                <!-- <div class="text-muted small"><em>Typing...</em></div> -->
+                                <div class="small"><span
+                                    [class]="specificUserStatus?.toLowerCase() == 'offline' ? 'fas fa-circle chat-offline' : 'fas fa-circle chat-online'"></span>
+                                {{specificUserStatus}}</div>
                             </div>
                             <div>
                                 <button class="btn btn-primary btn-lg mr-1 px-3"><svg xmlns="http://www.w3.org/2000/svg"
@@ -82,15 +85,15 @@
                                     <button *ngIf="i+1 == messageLimit && showReadMoreButton" class="button-89"
                                         role="button" (click)="showMoreMessages()">Read More</button>
                                 </div>
-                                <h1>{{i + 1}}</h1>
-                                <h1>{{messageLimit}}</h1>
+                                <!-- <h1>{{i + 1}}</h1>
+                                <h1>{{messageLimit}}</h1> -->
 
                                 <div class="chat-message-right mb-4" *ngIf="chat.UserId == loggedInUserId">
-                                    <i class="fas fa-check-circle"></i>
                                     <div>
                                         <img src="{{loggedInImageUrl}}" class="rounded-circle mr-1" alt="Chris Wood"
-                                            width="40" height="40">
+                                        width="40" height="40">
                                         <div class="text-muted small text-nowrap mt-2">
+                                            <ng-container *ngIf="chat.msgRead == false"> <i [class]="specificUserStatus?.toLowerCase() == 'online' ? 'fas fa-check-circle' : 'far fa-check-circle'"></i> </ng-container>
                                             {{this.datePipe.transform(chat.updatedBy,'hh:mm a')}}</div>
                                     </div>
                                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">

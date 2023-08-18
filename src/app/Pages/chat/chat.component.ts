@@ -31,6 +31,7 @@ export class ChatComponent implements OnInit {
   msgRequired: boolean = false;
   allusers: any;
   unreadMsgs: any[] = [];
+  specificUserStatus: string;
   // typingStatus: any;
   // openchatTypingStatus: any;
 
@@ -106,6 +107,7 @@ export class ChatComponent implements OnInit {
 
   GetSpecificUser(openChatPerson) {
     let specificUser = this.usersData.filter(x => x.uid == openChatPerson)[0]
+    this.specificUserStatus = this.allusers.filter(x => x.uid == openChatPerson)[0].Status
     this.UserName = specificUser.UserName;
     this.ImageUrl = specificUser.ImageUrl;
   }
@@ -171,6 +173,7 @@ export class ChatComponent implements OnInit {
           msgRead: e.payload.doc.data().msgRead
         }
       });
+      
       let obj = this.chats.filter(x => x.msgRead == false && x.UserId != this.loggedInUserId).map(x => x.id);
       this.itemService.updateColumnInMultipleDocuments(obj)
     });
