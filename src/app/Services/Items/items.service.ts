@@ -111,7 +111,7 @@ export class ItemsService {
         ));
   }
 
-  setUserPresence(obj: UserPresence) {//}: Promise<any> {debugger
+  setUserPresence(obj: UserPresence) {//}: Promise<any> {
     let AvailabilityStatusId = localStorage.getItem('AvailabilityStatusId')
 
     if (AvailabilityStatusId == null) {

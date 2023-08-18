@@ -24,9 +24,9 @@ export class IdleService {
     window.addEventListener('keydown', this.handleActivity);
   }
 
-  private setupInactivityTimer() {debugger
+  private setupInactivityTimer() {
     setInterval(() => {
-      if (this.isInactive()) {debugger
+      if (this.isInactive()) {
         let obj: UserPresence = {
           Status: 'Offline',
           UserId: JSON.parse(localStorage.getItem('user')).uid,
@@ -35,7 +35,7 @@ export class IdleService {
         this.itemService.setUserPresence(obj);
         this.activity$.next();
       }
-      else{debugger
+      else{
         let obj: UserPresence = {
           Status: 'Online',
           UserId: JSON.parse(localStorage.getItem('user')).uid,

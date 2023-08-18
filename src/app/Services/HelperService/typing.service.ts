@@ -45,7 +45,7 @@ export class TypingService {
     }, this.inactivityTimeout);
   }
 
-  private handleActivity = () => {debugger
+  private handleActivity = () => {
     this.lastActivityTime = Date.now();
   }
 

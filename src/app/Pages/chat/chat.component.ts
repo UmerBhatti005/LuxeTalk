@@ -129,7 +129,7 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  showMoreMessages() {debugger
+  showMoreMessages() {
     this.itemService.firebaseTable = 'chatMsg';
     this.showReadMoreButton = this.messageLimit <= this.chats.length;
     this.messageLimit += 15; // Increase the message limit
@@ -147,7 +147,6 @@ export class ChatComponent implements OnInit {
 
   // GetTypingStatus() {
   //   this.itemService.GetAllTypingStatus().subscribe((res: any) => {
-  //     debugger
   //     this.typingStatus = res;
   //     if(this.openChatPerson != null){
   //       this.openchatTypingStatus = res.filter(x => x.UserId == this.openChatPerson)[0]?.isTyping;

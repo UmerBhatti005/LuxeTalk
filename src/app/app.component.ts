@@ -59,9 +59,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
 
-  @HostListener('window:beforeunload', ['$event'])
-  async unloadUserState($event) {
-    debugger
+  @HostListener('window:unload')
+  async unloadUserState() {
     let obj: UserPresence = {
       Status: 'Offline',
       UserId: JSON.parse(localStorage.getItem('user')).uid,
@@ -70,7 +69,6 @@ export class AppComponent implements OnInit, OnDestroy {
     // $event.returnValue = false;
     // $event.returnValue = 'Are you sure you want to leave?';
     await this.itemService.setUserPresence(obj);
-    // return false
   }
 
   // setTimeout() {
