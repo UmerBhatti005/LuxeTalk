@@ -8,6 +8,7 @@ import { initializeApp } from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { ItemsService } from 'src/app/Services/Items/items.service';
 import { UserPresence } from 'src/app/appModel/chat-model';
+import { SharedService } from 'src/app/Services/Shared/shared.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -19,19 +20,13 @@ export class SignInComponent implements OnInit {
   registerForm!: FormGroup;
   loginForm!: FormGroup;
   private storage = getStorage(initializeApp(environment));
-  // cloudinary: cloudinary.Cloudinary = new cloudinary.Cloudinary({ cloud_name: environment.cloudinary.cloudName });
-
-  //cloudinaryUrl: string = this.cloudinary.url('https://res.cloudinary.com/dpcdpz5oo/image/upload/v1687359055/ckd2kdslt5combzf1dw4.jpg', { width: 300, crop: 'scale' });
-  // uploadOptions: cloudinary. = {
-  //   cloudName: environment.cloudinary.cloudName,
-  //   uploadPreset: 'default', // You need to set up an upload preset in your Cloudinary account
-  // };
   imagePreview: any;
 
   constructor(
     public authService: AuthService,
     private fb: FormBuilder,
-    private itemService: ItemsService
+    private itemService: ItemsService,
+    private sharedService: SharedService
   ) {
   }
   ngOnInit(): void {
@@ -63,12 +58,14 @@ export class SignInComponent implements OnInit {
 
   async Login() {
     await this.authService.SignIn(this.loginForm.value);
+    this.sharedService.triggerLogin();
     let obj: UserPresence = {
       Status: 'Online',
       UserId: JSON.parse(localStorage.getItem('user')).uid,
       updatedBy: new Date()
     }
-    this.itemService.setUserPresence(obj)
+    this.itemService.setUserPresence(obj);
+
   }
 
   async Register() {

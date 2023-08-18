@@ -22,19 +22,19 @@ export class AuthService {
 
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
-    this.afAuth.authState.subscribe((user) => {
-      if (user) {
-        this.userData = user;
-        localStorage.removeItem('user');
-        localStorage.setItem('user', JSON.stringify(this.userData));
-        // localStorage.setItem('UserId', JSON.stringify(this.userData.uid));
-        // JSON.parse(localStorage.getItem('UserEmail')!);
-        // JSON.parse(localStorage.getItem('UserId')!);
-      } else {
-        localStorage.setItem('user', 'null');
-        // JSON.parse(localStorage.getItem('user')!);
-      }
-    });
+    // this.afAuth.authState.subscribe((user) => {debugger
+    //   if (user) {
+    //     this.userData = user;
+    //     localStorage.removeItem('user');
+    //     localStorage.setItem('user', JSON.stringify(this.userData));
+    //     // localStorage.setItem('UserId', JSON.stringify(this.userData.uid));
+    //     // JSON.parse(localStorage.getItem('UserEmail')!);
+    //     // JSON.parse(localStorage.getItem('UserId')!);
+    //   } else {
+    //     localStorage.setItem('user', 'null');
+    //     // JSON.parse(localStorage.getItem('user')!);
+    //   }
+    // });
   }
   // Sign in with email/password
   SignIn(formValue: any): Promise<any> {

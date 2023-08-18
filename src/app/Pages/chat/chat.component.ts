@@ -129,11 +129,11 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  showMoreMessages() {
+  showMoreMessages() {debugger
     this.itemService.firebaseTable = 'chatMsg';
-    this.GenericGetMessage();
     this.showReadMoreButton = this.messageLimit <= this.chats.length;
     this.messageLimit += 15; // Increase the message limit
+    this.GenericGetMessage();
   }
 
   GetUserPresence() {
@@ -162,7 +162,6 @@ export class ChatComponent implements OnInit {
     }, this.messageLimit, this.messageSkip);
 
     this.chatMessages$.subscribe((messages: any) => {
-      console.log(messages); // Handle the retrieved data here
       this.chats = messages.map(e => {
         return {
           id: e.payload.doc.id,

@@ -8,7 +8,7 @@ import { ItemsService } from '../Items/items.service';
 })
 export class IdleService {
 
-  private inactivityTimeout: number = 600000; // 10 minutes of inactivity
+  private inactivityTimeout: number = 300000; // 5 minutes of inactivity
   private lastActivityTime: number = Date.now();
   private activity$: Subject<void> = new Subject<void>();
 
@@ -24,9 +24,9 @@ export class IdleService {
     window.addEventListener('keydown', this.handleActivity);
   }
 
-  private setupInactivityTimer() {
+  private setupInactivityTimer() {debugger
     setInterval(() => {
-      if (this.isInactive()) {
+      if (this.isInactive()) {debugger
         let obj: UserPresence = {
           Status: 'Offline',
           UserId: JSON.parse(localStorage.getItem('user')).uid,
@@ -35,7 +35,7 @@ export class IdleService {
         this.itemService.setUserPresence(obj);
         this.activity$.next();
       }
-      else{
+      else{debugger
         let obj: UserPresence = {
           Status: 'Online',
           UserId: JSON.parse(localStorage.getItem('user')).uid,

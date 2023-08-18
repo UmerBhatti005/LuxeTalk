@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryFn } from '@angular/fire/compat/firestore';
 import { Observable, first, map } from 'rxjs';
+import { UserPresence } from 'src/app/appModel/chat-model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,6 @@ export class ItemsService {
   CreateItem(student: any) {
     return new Promise<any>((resolve, reject) => {
       this.fireStore.collection(this.firebaseTable).add(student).then((reponse: any) => {
-        console.log(reponse);
       }, error => {
         console.log(error);
       })
@@ -55,7 +55,6 @@ export class ItemsService {
   UpdateMsgs(obj: any, id) {
     return new Promise<any>((resolve, reject) => {
       this.fireStore.collection(this.firebaseTable).doc(id).update(obj).then((reponse: any) => {
-        console.log(reponse);
       }, error => {
         console.log(error);
 
@@ -96,7 +95,6 @@ export class ItemsService {
   DeleteItem(id: any) {
     return new Promise<any>((resolve, reject) => {
       this.fireStore.collection(this.firebaseTable).doc(id).delete().then((reponse: any) => {
-        console.log(reponse);
       }, error => {
         console.log(error);
 
@@ -113,19 +111,19 @@ export class ItemsService {
         ));
   }
 
-  setUserPresence(obj: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.GetUserPresence(obj.UserId).subscribe((res: any) => {
-        let docId = res[0]?.payload?.doc?.id
-        if (res.length == 0) {
-          this.fireStore.collection('userPresence').add(obj);
-        }
-        else {
-          this.fireStore.collection('userPresence').doc(docId).update(obj);
-        }
-        resolve('');
-      });
-    })
+  setUserPresence(obj: UserPresence) {//}: Promise<any> {debugger
+    let AvailabilityStatusId = localStorage.getItem('AvailabilityStatusId')
+
+    if (AvailabilityStatusId == null) {
+      this.fireStore.collection('userPresence').add(obj);
+    }
+    else {
+      this.fireStore.collection('userPresence').doc(AvailabilityStatusId).update(obj);
+    }
+    //     }
+    //     resolve('');
+    //   });
+    // })
   }
 
   GetAllUserPresence() {
