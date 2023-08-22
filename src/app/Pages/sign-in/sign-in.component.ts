@@ -58,7 +58,7 @@ export class SignInComponent implements OnInit {
   }
 
 
-  async Login() {
+  async Login() {debugger
     await this.authService.SignIn(this.loginForm.value);
     this.sharedService.triggerLogin();
     let obj: UserPresence = {
@@ -67,7 +67,7 @@ export class SignInComponent implements OnInit {
       updatedBy: new Date()
     }
     this.itemService.setUserPresence(obj);
-    let fcmToken = this.notificationMessageService.requestPermission();
+    let fcmToken = await this.notificationMessageService.requestPermission();
     this.notificationMessageService.listen();
     this.itemService.UpdateFcmToken(fcmToken);
     
