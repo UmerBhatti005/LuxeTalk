@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { ItemsService } from 'src/app/Services/Items/items.service';
 import { UserPresence } from 'src/app/appModel/chat-model';
 import { SharedService } from 'src/app/Services/Shared/shared.service';
+import { NotificationMessagingService } from 'src/app/Services/NotificationMessage/notification-messaging.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -26,7 +27,8 @@ export class SignInComponent implements OnInit {
     public authService: AuthService,
     private fb: FormBuilder,
     private itemService: ItemsService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private notificationMessageService: NotificationMessagingService
   ) {
   }
   ngOnInit(): void {
@@ -65,7 +67,10 @@ export class SignInComponent implements OnInit {
       updatedBy: new Date()
     }
     this.itemService.setUserPresence(obj);
-
+    let fcmToken = this.notificationMessageService.requestPermission();
+    this.notificationMessageService.listen();
+    this.itemService.UpdateFcmToken(fcmToken);
+    
   }
 
   async Register() {
