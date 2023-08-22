@@ -126,6 +126,12 @@ export class ItemsService {
     // })
   }
 
+  UpdateFcmToken(fcmToken) {debugger
+    this.fireStore.doc(`users/${this.userId}`).update({
+      fcmToken: fcmToken,
+    });
+  }
+
   GetAllUserPresence() {
     return this.fireStore.collection('userPresence').valueChanges();
   }

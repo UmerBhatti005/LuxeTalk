@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { ItemsService } from 'src/app/Services/Items/items.service';
+import { NotificationMessagingService } from 'src/app/Services/NotificationMessage/notification-messaging.service';
 
 @Component({
   selector: 'app-chat',
@@ -32,21 +33,24 @@ export class ChatComponent implements OnInit {
   allusers: any;
   unreadMsgs: any[] = [];
   specificUserStatus: string;
+  fcmToken: any;
   // typingStatus: any;
   // openchatTypingStatus: any;
 
   constructor(public afs: AngularFirestore, // Inject Firestore service,
     public afAuth: AngularFireAuth, // Inject Firebase auth service
-    private itemService: ItemsService) {
+    private itemService: ItemsService,
+    private notificationMessageService: NotificationMessagingService) {
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
 
     this.itemService.firebaseTable = 'chatMsg';
     this.GetAllUser();
     this.GetUserPresence();
     this.GetUnreadMsgsCount();
     this.loggedInUserId = JSON.parse(localStorage.getItem('user'))?.uid;
+    // this.fcmToken = JSON.parse(localStorage.getItem('user'))?.fcmToken;
   }
 
   GetAllUser() {
@@ -99,6 +103,7 @@ export class ChatComponent implements OnInit {
     this.chats = [];
     this.showChatBoxBool = true;
     this.openChatPerson = openChatPerson;
+    this.fcmToken = this.allusers.filter(x => x.id == this.openChatPerson)[0].fcmToken;
     this.itemService.firebaseTable = 'chatMsg';
     this.GenericGetMessage();
     let idxReadmsg = this.unreadMsgs.findIndex(x => x.Id == openChatPerson)
@@ -126,7 +131,18 @@ export class ChatComponent implements OnInit {
         SendToUser: this.openChatPerson,
         msgRead: false
       }
-      this.itemService.CreateItem(obj);
+      this.itemService.CreateItem(obj);debugger
+      this.notificationMessageService.sendNotification(this.fcmToken, this.loggedInUser[0].UserName).subscribe({
+        next: (res) => {
+          console.log(res);
+          // window.location.href = 'https://localhost:4200/chat'
+        },
+        error: (err) => {
+          console.log(err);
+
+        }
+      }
+      );
       this.chatMsg = '';
     }
   }
@@ -173,14 +189,14 @@ export class ChatComponent implements OnInit {
           msgRead: e.payload.doc.data().msgRead
         }
       });
-      
+
       let obj = this.chats.filter(x => x.msgRead == false && x.UserId != this.loggedInUserId).map(x => x.id);
       this.itemService.updateColumnInMultipleDocuments(obj)
     });
 
   }
 
-  filterUser(event: any) {
+  filterUser(event: any) {debugger
     this.allusers = this.usersData.filter(item => item.UserName.toLowerCase().includes(event.target.value.toLowerCase()));
   }
 
